@@ -2,7 +2,6 @@ const cron = require('node-cron');
 const habits = require('../data/habits');
 const WebSocket = require('ws');
 
-// Create WebSocket server
 const wss = new WebSocket.Server({ port: 8080 });
 
 wss.on('connection', (ws) => {
@@ -10,7 +9,6 @@ wss.on('connection', (ws) => {
     ws.send('Welcome to the Habit Tracker Reminder Service!');
 });
 
-// Cron job to send reminders every minute
 cron.schedule('* * * * *', () => {
     const reminders = habits.map(habit => ({
         name: habit.name,
@@ -19,7 +17,7 @@ cron.schedule('* * * * *', () => {
 
     wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(reminders)); // Send reminders
+            client.send(JSON.stringify(reminders));
         }
     });
 
